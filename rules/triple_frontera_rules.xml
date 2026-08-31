@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Triple Frontera Cyber-Threat Intelligence Lab
+    Reglas Personalizadas para Wazuh - ICS/OT Focus
+    Autor: Carlos Gallardo
+    Fecha: Agosto 2026
+    Contexto: Detección de amenazas en la Triple Frontera
+    Basado en: MITRE ATT&CK for ICS, IEC 62443
+-->
+
+<ruleset>
+    <!--
+        REGLA 100001: Detección de Comunicación C2 en OT
+        MITRE ATT&CK: T1071 - Application Layer Protocol
+        Nivel: 12 (Crítica)
+    -->
+    <rule id="100001" level="12">
+        <if_group>sysmon_event3</if_group>
+        <field name="win.eventdata.destinationIp" type="pcre2">(?:185\.|45\.|5\.|94\.)\d+\.\d+\.\d+</field>
+        <description>Posible comunicación C2 detectada en entorno OT/ICS</description>
+        <mitre>
+            <id>T1071</id>
+        </mitre>
+    </rule>
+
+    <!--
+        REGLA 100002: Detección de Modificación de Lógica de Control (ICS)
+        MITRE ATT&CK: T0831 - Modify Control Logic
+        Nivel: 15 (Crítica)
+    -->
+    <rule id="100002" level="15">
+        <if_group>ics_events</if_group>
+        <field name="ics.event.type" type="pcre2">(?i)(modify|change|update|alter).*control.*logic</field>
+        <description>Posible modificación de lógica de control industrial - T0831</description>
+        <mitre>
+            <id>T0831</id>
+        </mitre>
+    </rule>
+
+    <!--
+        REGLA 100003: Detección de Denegación de Control (ICS)
+        MITRE ATT&CK: T0813 - Denial of Control
+        Nivel: 14 (Crítica)
+    -->
+    <rule id="100003" level="14">
+        <if_group>ics_events</if_group>
+        <field name="ics.event.type" type="pcre2">(?i)(denial|stop|halt|shutdown|disable)</field>
+        <description>Posible denegación de control en entorno OT/ICS - T0813</description>
+        <mitre>
+            <id>T0813</id>
+        </mitre>
+    </rule>
+
+    <!--
+        REGLA 100004: Detección de Fuerza Bruta SSH
+        MITRE ATT&CK: T1110.001 - Brute Force: Password Guessing
+        Nivel: 10 (Alta)
+    -->
+    <rule id="100004" level="10" frequency="5" timeframe="60" overwrite="yes">
+        <if_matched_group>authentication_failures</if_matched_group>
+        <srcip>any</srcip>
+        <description>Posible ataque de fuerza bruta SSH detectado desde la IP $(srcip)</description>
+        <mitre>
+            <id>T1110.001</id>
+        </mitre>
+    </rule>
+
+    <!--
+        REGLA 100005: Detección de Modificación de Archivos Críticos
+        MITRE ATT&CK: T1136.001 - Create Account: Local Account
+        Nivel: 7 (Media-Alta)
+    -->
+    <rule id="100005" level="7">
+        <if_sid>550</if_sid>
+        <field name="file">/etc/passwd</field>
+        <description>Archivo /etc/passwd modificado - posible creación/modificación de usuarios</description>
+        <mitre>
+            <id>T1136.001</id>
+        </mitre>
+    </rule>
+
+    <!--
+        REGLA 100006: Detección de Manipulación de SCADA
+        MITRE ATT&CK: T0856 - Spoof Reporting Message
+        Nivel: 13 (Crítica)
+    -->
+    <rule id="100006" level="13">
+        <if_group>scada_events</if_group>
+        <field name="scada.event.type" type="pcre2">(?i)(spoof|false|report|misreport)</field>
+        <description>Posible manipulación de reportes SCADA - T0856</description>
+        <mitre>
+            <id>T0856</id>
+        </mitre>
+    </rule>
+</ruleset>
