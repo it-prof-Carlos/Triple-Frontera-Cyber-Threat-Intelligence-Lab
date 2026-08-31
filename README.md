@@ -13,7 +13,7 @@ El **Triple Frontera Cyber-Threat Intelligence Lab** es un proyecto integral que
 
 1. **Empresas de Tecnología** (centros de datos, comunicaciones satelitales)
 2. **Plantas de Extracción de Minerales Críticos** (litio, cobre, tierras raras)
-3. **Infraestructura Turística de Alto Nivel** (Hotel Hilton Garden Inn Salta)
+3. **Infraestructura Turística de Alto Nivel** (Hoteles Internacionales  Salta -Jujuy )
 
 **Contexto de Amenaza (2025-2026):**
 
@@ -21,7 +21,8 @@ El **Triple Frontera Cyber-Threat Intelligence Lab** es un proyecto integral que
 - **El gobierno dio 180 días a los organismos públicos** para reforzar su ciberseguridad, fortaleciendo la resiliencia de las infraestructuras críticas.
 - **La Triple Frontera es un punto crítico** para el financiamiento de grupos terroristas y el crimen organizado transnacional.
 - **Argentina se ha alineado con EE.UU.** en la alianza "Pax Silica" para asegurar cadenas de suministro de minerales críticos e inteligencia artificial.
-- **El Hilton Garden Inn Salta** (primer hotel de la cadena en la provincia) se inaugurará a fines de 2026, con 10.500 m² y 350 plazas.
+- **Estructuras Hoterleras Internacionales  en  Salta - Jujuy ** .
+- 
 
 **Valor del Proyecto:**  
 Este laboratorio demuestra la capacidad de integrar **inteligencia criminal**, **análisis geopolítico**, **ciberseguridad GRC** e **Inteligencia Artificial** para proteger infraestructuras críticas en zonas de alta complejidad. 
