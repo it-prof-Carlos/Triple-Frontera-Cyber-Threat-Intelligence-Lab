@@ -1,0 +1,117 @@
+"""
+Triple Frontera Cyber-Threat Intelligence Lab - Dashboard
+Author: Carlos Gallardo
+Description: Dashboard interactivo para monitoreo de amenazas en la Triple Frontera
+"""
+
+import streamlit as st
+import pandas as pd
+import numpy as np
+import plotly.express as px
+import plotly.graph_objects as go
+from datetime import datetime
+import json
+
+# Page configuration
+st.set_page_config(
+    page_title="Triple Frontera Cyber-Threat Intelligence Lab",
+    page_icon="🛡️",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# Title
+st.title("🛡️ Triple Frontera Cyber-Threat Intelligence Lab")
+st.markdown("*AI-Powered Threat Intelligence Platform for Critical Infrastructure*")
+st.markdown("---")
+
+# Sidebar
+with st.sidebar:
+    st.header("⚙️ Configuration")
+    st.markdown("**Region:** Triple Frontera (Argentina - Brasil - Paraguay)")
+    st.markdown("**Sectores Críticos:**")
+    st.markdown("- 🏭 Minerales Críticos (Litio, Cobre)")
+    st.markdown("- 🏨 Infraestructura Turística (Hilton Salta)")
+    st.markdown("- 💻 Empresas de Tecnología")
+    st.markdown("---")
+    st.markdown("**Contexto Oficial:**")
+    st.markdown("- Centro Nacional de Ciberseguridad (2026)")
+    st.markdown("- Disposición AR 1/2026 (180 días)")
+    st.markdown("- Alianza Pax Silica (Minerales Críticos)")
+    st.markdown("---")
+    st.markdown("**Autor:** Carlos Gallardo")
+    st.markdown("[GitHub](https://github.com/it-prof-Carlos) | [LinkedIn](https://www.linkedin.com/in/carlos-gallardo-746059194)")
+
+# Main content
+st.header("📊 Panorama de Amenazas - Triple Frontera")
+
+# Metrics
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    st.metric("Canales OSINT Monitoreados", "47", delta="+12")
+with col2:
+    st.metric("Amenazas Activas", "23", delta="⚠️ Crítico")
+with col3:
+    st.metric("IPs C2 Bloqueadas", "45", delta="+8")
+with col4:
+    st.metric("Infraestructuras Protegidas", "3", delta="En curso")
+
+st.markdown("---")
+
+# Threat Map
+st.subheader("🗺️ Mapa de Amenazas - Triple Frontera")
+col1, col2 = st.columns([2, 1])
+
+with col1:
+    # Simulación de mapa de amenazas
+    threat_data = pd.DataFrame({
+        'location': ['Puerto Iguazú', 'Salta', 'Jujuy', 'Misiones', 'Formosa'],
+        'threat_level': ['Crítico', 'Alto', 'Medio', 'Alto', 'Medio'],
+        'threats': [12, 8, 5, 7, 4]
+    })
+    
+    fig = px.bar(threat_data, x='location', y='threats', color='threat_level',
+                 title='Nivel de Amenazas por Ubicación',
+                 color_discrete_map={'Crítico': '#ff6b6b', 'Alto': '#ffd93d', 'Medio': '#51cf66'})
+    st.plotly_chart(fig, use_container_width=True)
+
+with col2:
+    st.markdown("**Sectores Críticos Afectados:**")
+    st.markdown("""
+    - 🏭 **Minerales Críticos**: Litio, Cobre (Catamarca, San Juan)
+    - 🏨 **Hilton Salta**: Infraestructura turística (apertura 2026)
+    - 💻 **Centros de Datos**: Comunicaciones satelitales
+    """)
+    st.warning("⚠️ **Alerta:** Presencia de grupos terroristas en la Triple Frontera[reference:27]")
+
+st.markdown("---")
+
+# MITRE ATT&CK Mapping
+st.subheader("🎯 MITRE ATT&CK Mapping")
+mitre_data = pd.DataFrame({
+    'Táctica': ['Initial Access', 'Execution', 'Persistence', 'Privilege Escalation', 'Defense Evasion', 'ICS/OT'],
+    'Técnica': ['Phishing (T1566)', 'PowerShell (T1059.001)', 'Registry Run Keys (T1547.001)', 
+                'Exploitation (T1068)', 'Obfuscation (T1027)', 'Modify Control Logic (T0831)'],
+    'ID': ['T1566', 'T1059.001', 'T1547.001', 'T1068', 'T1027', 'T0831']
+})
+st.dataframe(mitre_data, use_container_width=True)
+
+st.markdown("---")
+
+# Alerts
+st.subheader("🔔 Alertas Recientes")
+alerts = [
+    {"timestamp": "2026-08-30 14:23", "source": "Wazuh", "alert": "Posible comunicación C2 detectada", "severity": "Crítica"},
+    {"timestamp": "2026-08-30 12:15", "source": "OSINT", "alert": "Canal de Telegram ilícito identificado", "severity": "Alta"},
+    {"timestamp": "2026-08-30 10:45", "source": "IA/ML", "alert": "Anomalía en transacciones financieras", "severity": "Media"},
+]
+for alert in alerts:
+    color = "🔴" if alert['severity'] == "Crítica" else "🟡" if alert['severity'] == "Alta" else "🟢"
+    st.write(f"{color} **{alert['timestamp']}** - {alert['source']}: {alert['alert']} ({alert['severity']})")
+
+st.markdown("---")
+
+# Export
+st.subheader("📥 Exportar Reporte")
+if st.button("Generar Reporte PDF"):
+    st.info("Reporte generado: `reports/executive_summary.pdf`")
