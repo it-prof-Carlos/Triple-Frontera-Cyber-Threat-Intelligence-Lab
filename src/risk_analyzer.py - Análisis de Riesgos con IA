@@ -1,0 +1,151 @@
+"""
+Risk Analyzer for Triple Frontera with AI/ML
+Author: Carlos Gallardo
+Description: Análisis de riesgos geopolíticos y cibernéticos con IA
+"""
+
+import pandas as pd
+import numpy as np
+from sklearn.ensemble import IsolationForest
+from sklearn.preprocessing import StandardScaler
+from xgboost import XGBClassifier
+import joblib
+import json
+
+class RiskAnalyzer:
+    """
+    Analizador de riesgos para la Triple Frontera con IA
+    """
+    
+    def __init__(self):
+        self.risks = {
+            'geopolitical': [
+                {'name': 'Presencia de grupos terroristas', 'level': 'Alto'},
+                {'name': 'Lavado de dinero', 'level': 'Alto'},
+                {'name': 'Contrabando', 'level': 'Medio'},
+                {'name': 'Trata de personas', 'level': 'Alto'}
+            ],
+            'cyber': [
+                {'name': 'Ataques de phishing', 'level': 'Alto'},
+                {'name': 'Ransomware', 'level': 'Crítico'},
+                {'name': 'Exfiltración de datos', 'level': 'Alto'},
+                {'name': 'Ataques a infraestructura crítica', 'level': 'Crítico'},
+                {'name': 'Manipulación de SCADA/PLC', 'level': 'Crítico'}
+            ]
+        }
+        self.model_if = None
+        self.model_xgb = None
+        self.scaler = None
+    
+    def assess_geopolitical_risk(self):
+        """Evalúa riesgos geopolíticos"""
+        assessment = {
+            'region': 'Triple Frontera',
+            'countries': ['Argentina', 'Brasil', 'Paraguay'],
+            'risk_level': 'Alto',
+            'factors': self.risks['geopolitical'],
+            'recommendations': [
+                'Fortalecer la cooperación entre los tres países',
+                'Implementar sistemas de monitoreo avanzados',
+                'Capacitar al personal en inteligencia criminal'
+            ]
+        }
+        return assessment
+    
+    def assess_cyber_risk(self):
+        """Evalúa riesgos cibernéticos"""
+        assessment = {
+            'region': 'Triple Frontera',
+            'risk_level': 'Crítico',
+            'threats': self.risks['cyber'],
+            'recommendations': [
+                'Implementar SIEM/XDR (Wazuh) con reglas ICS/OT',
+                'Desarrollar reglas personalizadas para entornos industriales',
+                'Establecer un SOC regional',
+                'Realizar ejercicios de ciberseguridad'
+            ]
+        }
+        return assessment
+    
+    def train_anomaly_detector(self, data):
+        """Entrena modelos de detección de anomalías (Isolation Forest + XGBoost)"""
+        features = ['amount', 'frequency', 'location_distance', 'time_of_day', 'ics_anomaly_score']
+        X = data[features].values
+        y = data['is_anomaly'].values if 'is_anomaly' in data.columns else None
+        
+        self.scaler = StandardScaler()
+        X_scaled = self.scaler.fit_transform(X)
+        
+        # Isolation Forest para detección de anomalías no supervisada
+        self.model_if = IsolationForest(contamination=0.05, random_state=42)
+        self.model_if.fit(X_scaled)
+        
+        # XGBoost para clasificación supervisada (si hay etiquetas)
+        if y is not None:
+            self.model_xgb = XGBClassifier(n_estimators=100, max_depth=6, learning_rate=0.1)
+            self.model_xgb.fit(X_scaled, y)
+        
+        joblib.dump(self.model_if, 'risk_anomaly_model_if.pkl')
+        joblib.dump(self.model_xgb, 'risk_anomaly_model_xgb.pkl') if self.model_xgb else None
+        joblib.dump(self.scaler, 'risk_scaler.pkl')
+        
+        return self.model_if
+    
+    def detect_anomalies(self, data):
+        """Detecta anomalías usando ambos modelos"""
+        if self.model_if is None:
+            raise ValueError("El modelo no ha sido entrenado")
+        
+        features = ['amount', 'frequency', 'location_distance', 'time_of_day', 'ics_anomaly_score']
+        X = data[features].values
+        X_scaled = self.scaler.transform(X)
+        
+        # Predicciones de Isolation Forest
+        predictions_if = self.model_if.predict(X_scaled)
+        anomalies_if = X[predictions_if == -1]
+        
+        # Predicciones de XGBoost (si está disponible)
+        if self.model_xgb is not None:
+            predictions_xgb = self.model_xgb.predict(X_scaled)
+            anomalies_xgb = X[predictions_xgb == 1]
+            combined_anomalies = np.unique(np.concatenate([anomalies_if, anomalies_xgb]), axis=0)
+            return combined_anomalies
+        
+        return anomalies_if
+    
+    def generate_risk_report(self):
+        """Genera un reporte de riesgos completo"""
+        geopolitical = self.assess_geopolitical_risk()
+        cyber = self.assess_cyber_risk()
+        
+        report = {
+            'date': pd.Timestamp.now().strftime('%Y-%m-%d'),
+            'geopolitical_risk': geopolitical,
+            'cyber_risk': cyber,
+            'overall_risk_level': 'Crítico',
+            'priority_actions': [
+                'Implementar Wazuh SIEM con reglas ICS/OT personalizadas',
+                'Establecer canales de comunicación entre los tres países',
+                'Desarrollar capacidades de IA para detección de amenazas',
+                'Proteger infraestructuras críticas según lo dispuesto por el Centro Nacional de Ciberseguridad'
+            ]
+        }
+        return report
+
+if __name__ == "__main__":
+    analyzer = RiskAnalyzer()
+    report = analyzer.generate_risk_report()
+    
+    print("\n📊 REPORTE DE RIESGOS - TRIPLE FRONTERA")
+    print("=" * 50)
+    print(f"📅 Fecha: {report['date']}")
+    print(f"⚠️ Nivel de Riesgo General: {report['overall_risk_level']}")
+    print("\n📋 Riesgos Geopolíticos:")
+    for risk in report['geopolitical_risk']['factors']:
+        print(f"  • {risk['name']}: {risk['level']}")
+    print("\n🛡️ Riesgos Cibernéticos:")
+    for risk in report['cyber_risk']['threats']:
+        print(f"  • {risk['name']}: {risk['level']}")
+    print("\n✅ Acciones Prioritarias:")
+    for action in report['priority_actions']:
+        print(f"  • {action}")
