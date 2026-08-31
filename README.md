@@ -1,7 +1,7 @@
 # Triple Frontera Cyber-Threat Intelligence Lab
 
 **Autor:** Carlos Gallardo  
-**Fecha:** Agosto 2026  
+**Fecha:** Abril  2026  
 **Estado:**  En Desarrollo  
 **Contexto:** Proyecto Integrador - Ingeniería en Inteligencia Artificial
 
